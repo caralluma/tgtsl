@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Target & SL Calculator</title>
+        <style>
+            body { font-family: system-ui, Arial; margin: 16px; }
+                .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; max-width: 520px; margin: 0 auto; }
+                    h1 { font-size: 20px; margin: 0 0 12px; }
+                        label { display: block; margin: 10px 0 6px; font-weight: 600; }
+                            input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; }
+                                .row { display: flex; gap: 10px; }
+                                    .row > div { flex: 1; }
+                                        button { width: 100%; padding: 12px; border: 0; border-radius: 10px; font-size: 16px; margin-top: 12px; }
+                                            .primary { background: #111; color: #fff; }
+                                                .secondary { background: #f2f2f2; }
+                                                    .out { margin-top: 14px; padding: 12px; background: #fafafa; border-radius: 10px; border: 1px solid #eee; }
+                                                        .val { font-size: 22px; font-weight: 800; margin-top: 6px; }
+                                                            small { color: #666; }
+                                                              </style>
+                                                              </head>
+                                                              <body>
+                                                                <div class="card">
+                                                                    <h1>Target & Stop Loss Calculator</h1>
+
+                                                                        <label>Current Price</label>
+                                                                            <input id="price" inputmode="decimal" placeholder="e.g. 100" />
+
+                                                                                <div class="row">
+                                                                                      <div>
+                                                                                              <label>Target %</label>
+                                                                                                      <input id="tp" inputmode="decimal" value="50" />
+                                                                                                            </div>
+                                                                                                                  <div>
+                                                                                                                          <label>Stop Loss %</label>
+                                                                                                                                  <input id="sp" inputmode="decimal" value="50" />
+                                                                                                                                        </div>
+                                                                                                                                            </div>
+
+                                                                                                                                                <button class="primary" id="calc">Calculate</button>
+                                                                                                                                                    <button class="secondary" id="reset">Reset (50/50)</button>
+
+                                                                                                                                                        <div class="out">
+                                                                                                                                                              <div><small>Target Price</small></div>
+                                                                                                                                                                    <div class="val" id="targetVal">—</div>
+                                                                                                                                                                          <hr style="border:0;border-top:1px solid #eee;margin:12px 0;">
+                                                                                                                                                                                <div><small>Stop Loss Price</small></div>
+                                                                                                                                                                                      <div class="val" id="stopVal">—</div>
+                                                                                                                                                                                          </div>
+
+                                                                                                                                                                                              <p><small>Formula: Target = Price × (1 + %/100), SL = Price × (1 − %/100)</small></p>
+                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                <script>
+                                                                                                                                                                                                  const $ = (id) => document.getElementById(id);
+
+                                                                                                                                                                                                    function round2(n) {
+                                                                                                                                                                                                        return Math.round(n * 100) / 100;
+                                                                                                                                                                                                          }
+
+                                                                                                                                                                                                            function calc() {
+                                                                                                                                                                                                                const price = parseFloat($("price").value);
+                                                                                                                                                                                                                    const tp = parseFloat($("tp").value || "50");
+                                                                                                                                                                                                                        const sp = parseFloat($("sp").value || "50");
+
+                                                                                                                                                                                                                            if (!isFinite(price) || price <= 0 || !isFinite(tp) || tp < 0 || !isFinite(sp) || sp < 0) {
+                                                                                                                                                                                                                                  $("targetVal").textContent = "—";
+                                                                                                                                                                                                                                        $("stopVal").textContent = "—";
+                                                                                                                                                                                                                                              return;
+                                                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                                                      const target = round2(price * (1 + tp / 100));
+                                                                                                                                                                                                                                                          const stop = round2(price * (1 - sp / 100));
+
+                                                                                                                                                                                                                                                              $("targetVal").textContent = target.toFixed(2);
+                                                                                                                                                                                                                                                                  $("stopVal").textContent = stop.toFixed(2);
+                                                                                                                                                                                                                                                                    }
+
+                                                                                                                                                                                                                                                                      $("calc").addEventListener("click", calc);
+                                                                                                                                                                                                                                                                        $("reset").addEventListener("click", () => {
+                                                                                                                                                                                                                                                                            $("price").value = "";
+                                                                                                                                                                                                                                                                                $("tp").value = "50";
+                                                                                                                                                                                                                                                                                    $("sp").value = "50";
+                                                                                                                                                                                                                                                                                        $("targetVal").textContent = "—";
+                                                                                                                                                                                                                                                                                            $("stopVal").textContent = "—";
+                                                                                                                                                                                                                                                                                              });
+
+                                                                                                                                                                                                                                                                                                // Auto-calc while typing (nice UX)
+                                                                                                                                                                                                                                                                                                  ["price","tp","sp"].forEach(id => $(id).addEventListener("input", calc));
+                                                                                                                                                                                                                                                                                                  </script>
+                                                                                                                                                                                                                                                                                                  </body>
+                                                                                                                                                                                                                                                                                                  </html>
